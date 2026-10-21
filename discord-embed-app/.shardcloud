@@ -1,0 +1,5 @@
+DISPLAY_NAME=Discord Embed Builder
+DESCRIPTION=Bot Discord + Dashboard para criar embeds com botões
+MAIN=src/server.js
+MEMORY=512
+VERSION=LATEST

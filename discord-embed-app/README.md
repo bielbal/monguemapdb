@@ -69,9 +69,42 @@ npm run dev
 
 Acesse: `http://localhost:3000`
 
-## Deploy
+## Deploy — ShardCloud
 
-Para deploy em produção (ex: Railway, Render, VPS):
+1. **Gere o zip:**
+   ```bash
+   bash zip-deploy.sh
+   # gera: discord-embed-builder.zip
+   ```
+
+2. **No painel [shardcloud.app](https://shardcloud.app):**
+   - Clique em **New App** → selecione Node.js
+   - Faça upload do `discord-embed-builder.zip`
+   - O ShardCloud lê o `.shardcloud` automaticamente
+
+3. **Configure as variáveis de ambiente** no painel do ShardCloud:
+   ```
+   DISCORD_CLIENT_ID=...
+   DISCORD_CLIENT_SECRET=...
+   DISCORD_BOT_TOKEN=...
+   SESSION_SECRET=...
+   REDIRECT_URI=https://SEU-APP.shardcloud.app/auth/callback
+   PORT=3000
+   ```
+
+4. **Atualize o Redirect URI** no Discord Developer Portal para a URL pública do ShardCloud
+
+5. Clique em **Deploy** — o bot e o servidor Express sobem juntos
+
+### Config `.shardcloud`
+```
+DISPLAY_NAME=Discord Embed Builder
+MAIN=src/server.js
+MEMORY=512
+VERSION=LATEST
+```
+
+## Deploy — Outros (Railway, Render, VPS)
 
 1. Configure as variáveis de ambiente no servidor
 2. Mude `REDIRECT_URI` para a URL pública
