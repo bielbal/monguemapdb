@@ -1,0 +1,22 @@
+{
+  "name": "discord-embed-dashboard",
+  "version": "1.0.0",
+  "description": "Discord Embed Builder Dashboard with Discord OAuth login",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "uuid": "^11.0.5"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

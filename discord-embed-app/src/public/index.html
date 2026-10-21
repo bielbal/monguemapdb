@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Discord Embed Builder</title>
+<link rel="stylesheet" href="/css/style.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body class="landing">
+<div class="stars"></div>
+<nav class="navbar">
+  <div class="nav-brand">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#5865F2"/><path d="M21.5 10.5C20.3 10 19 9.7 17.6 9.6l-.2.4c1.3.3 2.4.8 3.5 1.5a11.8 11.8 0 0 0-9.8 0c1.1-.7 2.3-1.2 3.6-1.5l-.2-.4c-1.4.1-2.7.4-3.9.9C8.5 13.3 7 17 7 20.2c1.2 1.7 3.1 2.8 5.1 2.8l.6-1c-.9-.3-1.8-.8-2.5-1.5 1.8 1 3.8 1.5 5.8 1.5s4-.5 5.8-1.5c-.7.7-1.6 1.2-2.5 1.5l.6 1c2 0 3.9-1.1 5.1-2.8 0-3.2-1.5-6.9-3.5-9.7zM13 18.5c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8zm6 0c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8z" fill="white"/></svg>
+    <span>EmbedCraft</span>
+  </div>
+  <a href="/auth/login" class="btn-discord">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.93 4.24A16.54 16.54 0 0 0 13.1 3c-.17.3-.37.7-.5 1.02a15.3 15.3 0 0 0-4.6 0C7.87 3.7 7.66 3.3 7.5 3A16.49 16.49 0 0 0 3.67 4.25C.53 9.08-.32 13.8.1 18.45a16.64 16.64 0 0 0 5.08 2.57c.41-.56.77-1.16 1.09-1.78a10.83 10.83 0 0 1-1.71-.83c.14-.1.28-.21.42-.32a11.88 11.88 0 0 0 10.22 0c.14.11.28.22.42.32-.55.33-1.12.61-1.72.84.32.62.68 1.22 1.09 1.78a16.58 16.58 0 0 0 5.09-2.58c.42-4.38-.72-9.06-3.15-14.2ZM6.68 15.64c-1 0-1.82-.92-1.82-2.06 0-1.14.8-2.07 1.82-2.07s1.84.93 1.82 2.07c0 1.14-.8 2.06-1.82 2.06Zm6.64 0c-1 0-1.82-.92-1.82-2.06 0-1.14.8-2.07 1.82-2.07s1.84.93 1.82 2.07c0 1.14-.8 2.06-1.82 2.06Z" fill="white"/></svg>
+    Login com Discord
+  </a>
+</nav>
+
+<main class="hero">
+  <div class="hero-content">
+    <div class="badge">✨ Editor Visual de Embeds</div>
+    <h1>Crie <span class="gradient-text">embeds incríveis</span><br/>para o seu Discord</h1>
+    <p>Construtor visual completo com botões, ações, preview em tempo real e envio direto para qualquer canal do seu servidor.</p>
+    <div class="hero-actions">
+      <a href="/auth/login" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.93 4.24A16.54 16.54 0 0 0 13.1 3c-.17.3-.37.7-.5 1.02a15.3 15.3 0 0 0-4.6 0C7.87 3.7 7.66 3.3 7.5 3A16.49 16.49 0 0 0 3.67 4.25C.53 9.08-.32 13.8.1 18.45a16.64 16.64 0 0 0 5.08 2.57c.41-.56.77-1.16 1.09-1.78a10.83 10.83 0 0 1-1.71-.83c.14-.1.28-.21.42-.32a11.88 11.88 0 0 0 10.22 0c.14.11.28.22.42.32-.55.33-1.12.61-1.72.84.32.62.68 1.22 1.09 1.78a16.58 16.58 0 0 0 5.09-2.58c.42-4.38-.72-9.06-3.15-14.2ZM6.68 15.64c-1 0-1.82-.92-1.82-2.06 0-1.14.8-2.07 1.82-2.07s1.84.93 1.82 2.07c0 1.14-.8 2.06-1.82 2.06Zm6.64 0c-1 0-1.82-.92-1.82-2.06 0-1.14.8-2.07 1.82-2.07s1.84.93 1.82 2.07c0 1.14-.8 2.06-1.82 2.06Z" fill="white"/></svg>
+        Começar agora — é grátis
+      </a>
+    </div>
+    <div id="error-msg" class="error-banner" style="display:none"></div>
+  </div>
+
+  <div class="hero-preview">
+    <div class="discord-mockup">
+      <div class="mockup-header">
+        <span class="mockup-dot red"></span>
+        <span class="mockup-dot yellow"></span>
+        <span class="mockup-dot green"></span>
+        <span class="mockup-title"># geral</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-msg">
+          <img class="mockup-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="bot"/>
+          <div>
+            <span class="mockup-name">EmbedCraft <span class="bot-tag">BOT</span></span>
+            <div class="mockup-embed" id="preview-demo">
+              <div class="embed-bar" style="background:#5865F2"></div>
+              <div class="embed-content">
+                <div class="embed-title">🎉 Bem-vindo ao EmbedCraft!</div>
+                <div class="embed-desc">Crie embeds profissionais para o seu servidor Discord com nosso editor visual. Suporte completo a campos, botões e ações personalizadas.</div>
+                <div class="embed-field"><strong>⚡ Editor Visual</strong><br/>Interface drag-and-drop intuitiva</div>
+                <div class="embed-field"><strong>🔘 Botões & Ações</strong><br/>Até 5 botões por linha, 5 linhas</div>
+                <div class="embed-footer">EmbedCraft · Hoje às 00:00</div>
+              </div>
+            </div>
+            <div class="mockup-buttons">
+              <button class="mock-btn primary">✅ Confirmar</button>
+              <button class="mock-btn secondary">ℹ️ Saiba mais</button>
+              <button class="mock-btn danger">❌ Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="features">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>Editor Visual Completo</h3>
+      <p>Título, descrição, cor, autor, thumbnail, imagem, campos e rodapé — tudo com preview ao vivo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔘</div>
+      <h3>Botões Interativos</h3>
+      <p>Crie botões Primary, Secondary, Success, Danger e Link com custom IDs e ações customizáveis.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Envio Instantâneo</h3>
+      <p>Selecione o servidor e o canal, e envie seu embed diretamente pelo bot com um clique.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Login Seguro</h3>
+      <p>Autenticação via OAuth2 do Discord. Só vê os servidores onde você tem permissão.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>EmbedCraft — Construído com Discord.js + Express</p>
+</footer>
+
+<script>
+const p = new URLSearchParams(location.search);
+if (p.get('error')) {
+  const el = document.getElementById('error-msg');
+  const msgs = { auth_failed: 'Falha na autenticação. Tente novamente.', no_code: 'Código OAuth não recebido.' };
+  el.textContent = msgs[p.get('error')] || 'Erro desconhecido.';
+  el.style.display = 'block';
+}
+</script>
+</body>
+</html>

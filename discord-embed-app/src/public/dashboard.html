@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard — EmbedCraft</title>
+<link rel="stylesheet" href="/css/style.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#5865F2"/><path d="M21.5 10.5C20.3 10 19 9.7 17.6 9.6l-.2.4c1.3.3 2.4.8 3.5 1.5a11.8 11.8 0 0 0-9.8 0c1.1-.7 2.3-1.2 3.6-1.5l-.2-.4c-1.4.1-2.7.4-3.9.9C8.5 13.3 7 17 7 20.2c1.2 1.7 3.1 2.8 5.1 2.8l.6-1c-.9-.3-1.8-.8-2.5-1.5 1.8 1 3.8 1.5 5.8 1.5s4-.5 5.8-1.5c-.7.7-1.6 1.2-2.5 1.5l.6 1c2 0 3.9-1.1 5.1-2.8 0-3.2-1.5-6.9-3.5-9.7zM13 18.5c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8zm6 0c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8z" fill="white"/></svg>
+    <span>EmbedCraft</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" data-section="builder">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Embed Builder
+    </a>
+    <a href="#" class="nav-item" data-section="history">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Histórico
+    </a>
+    <a href="#" class="nav-item" data-section="templates">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+      Templates
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-info" id="user-info">
+      <img id="user-avatar" src="" alt="" class="user-avatar"/>
+      <div class="user-details">
+        <span id="user-name" class="user-name">Carregando...</span>
+        <span class="user-role">Discord User</span>
+      </div>
+    </div>
+    <a href="/auth/logout" class="logout-btn" title="Sair">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content">
+
+  <!-- Builder Section -->
+  <section id="section-builder" class="section active">
+    <div class="section-header">
+      <h1>Embed Builder</h1>
+      <p>Construa seu embed com preview em tempo real</p>
+    </div>
+
+    <div class="builder-layout">
+
+      <!-- Left: Form -->
+      <div class="builder-form">
+
+        <!-- Target -->
+        <div class="form-card">
+          <h2 class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Destino
+          </h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Servidor</label>
+              <select id="guild-select" onchange="loadChannels()">
+                <option value="">Selecione um servidor...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Canal</label>
+              <select id="channel-select">
+                <option value="">Selecione um canal...</option>
+              </select>
+            </div>
+          </div>
+          <div id="bot-warning" class="warning-msg" style="display:none">
+            ⚠️ O bot não está neste servidor. <a href="#" id="invite-link" target="_blank">Convidar bot</a>
+          </div>
+        </div>
+
+        <!-- Embed -->
+        <div class="form-card">
+          <h2 class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            Embed
+          </h2>
+
+          <div class="form-group">
+            <label>Cor da Barra</label>
+            <div class="color-row">
+              <input type="color" id="embed-color" value="#5865F2" oninput="updatePreview()"/>
+              <input type="text" id="embed-color-hex" value="#5865F2" placeholder="#5865F2" oninput="syncColorFromHex()" maxlength="7"/>
+              <div class="color-presets">
+                <span class="preset" style="background:#5865F2" onclick="setColor('#5865F2')" title="Blurple"></span>
+                <span class="preset" style="background:#57F287" onclick="setColor('#57F287')" title="Green"></span>
+                <span class="preset" style="background:#FEE75C" onclick="setColor('#FEE75C')" title="Yellow"></span>
+                <span class="preset" style="background:#ED4245" onclick="setColor('#ED4245')" title="Red"></span>
+                <span class="preset" style="background:#EB459E" onclick="setColor('#EB459E')" title="Fuchsia"></span>
+                <span class="preset" style="background:#9B59B6" onclick="setColor('#9B59B6')" title="Purple"></span>
+                <span class="preset" style="background:#E67E22" onclick="setColor('#E67E22')" title="Orange"></span>
+                <span class="preset" style="background:#1ABC9C" onclick="setColor('#1ABC9C')" title="Teal"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Author -->
+          <details class="collapsible">
+            <summary>Autor</summary>
+            <div class="collapsible-body">
+              <div class="form-group"><label>Nome do Autor</label><input type="text" id="author-name" placeholder="Nome do autor" oninput="updatePreview()"/></div>
+              <div class="form-row">
+                <div class="form-group"><label>URL do Autor</label><input type="url" id="author-url" placeholder="https://..." oninput="updatePreview()"/></div>
+                <div class="form-group"><label>Ícone do Autor (URL)</label><input type="url" id="author-icon" placeholder="https://..." oninput="updatePreview()"/></div>
+              </div>
+            </div>
+          </details>
+
+          <div class="form-group"><label>Título</label><input type="text" id="embed-title" placeholder="Título do embed" maxlength="256" oninput="updatePreview()"/></div>
+          <div class="form-group"><label>URL do Título</label><input type="url" id="embed-url" placeholder="https://..." oninput="updatePreview()"/></div>
+          <div class="form-group">
+            <label>Descrição <span class="char-count" id="desc-count">0/4096</span></label>
+            <textarea id="embed-desc" rows="4" placeholder="Descrição do embed. Suporta **markdown** do Discord." maxlength="4096" oninput="updatePreview(); updateCount('embed-desc','desc-count',4096)"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group"><label>Thumbnail (URL)</label><input type="url" id="embed-thumbnail" placeholder="https://..." oninput="updatePreview()"/></div>
+            <div class="form-group"><label>Imagem Grande (URL)</label><input type="url" id="embed-image" placeholder="https://..." oninput="updatePreview()"/></div>
+          </div>
+
+          <!-- Fields -->
+          <div class="fields-section">
+            <div class="fields-header">
+              <label>Campos <span class="badge-count" id="fields-count">0/25</span></label>
+              <button class="btn-add-field" onclick="addField()">+ Adicionar Campo</button>
+            </div>
+            <div id="fields-list"></div>
+          </div>
+
+          <!-- Footer -->
+          <details class="collapsible">
+            <summary>Rodapé</summary>
+            <div class="collapsible-body">
+              <div class="form-group"><label>Texto do Rodapé</label><input type="text" id="footer-text" placeholder="Texto do rodapé" maxlength="2048" oninput="updatePreview()"/></div>
+              <div class="form-group"><label>Ícone do Rodapé (URL)</label><input type="url" id="footer-icon" placeholder="https://..." oninput="updatePreview()"/></div>
+              <div class="form-group checkbox-group">
+                <input type="checkbox" id="embed-timestamp" onchange="updatePreview()"/>
+                <label for="embed-timestamp">Incluir timestamp atual</label>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- Buttons / Components -->
+        <div class="form-card">
+          <h2 class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2"/></svg>
+            Botões & Componentes
+          </h2>
+          <p class="card-desc">Máx. 5 linhas · 5 botões por linha</p>
+          <div id="components-list"></div>
+          <button class="btn-add-row" onclick="addButtonRow()" id="add-row-btn">+ Adicionar Linha de Botões</button>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-card">
+          <div class="send-row">
+            <button class="btn-send" onclick="sendEmbed()" id="send-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
+              Enviar Embed
+            </button>
+            <button class="btn-secondary-action" onclick="resetForm()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1,4 1,10 7,10"/><path d="M3.5 15A9 9 0 1 0 5.6 5.6L1 10"/></svg>
+              Resetar
+            </button>
+            <button class="btn-secondary-action" onclick="copyJSON()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar JSON
+            </button>
+          </div>
+          <div id="send-result" class="result-msg" style="display:none"></div>
+        </div>
+
+      </div>
+
+      <!-- Right: Preview -->
+      <div class="builder-preview">
+        <div class="preview-sticky">
+          <div class="preview-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview em Tempo Real
+          </div>
+          <div class="discord-preview">
+            <div class="preview-channel"># canal-selecionado</div>
+            <div class="preview-message">
+              <img class="bot-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="bot" id="preview-bot-avatar"/>
+              <div class="preview-msg-content">
+                <div class="preview-bot-name">EmbedCraft <span class="bot-tag">BOT</span> <span class="preview-time">Hoje às <span id="preview-time-val"></span></span></div>
+                <div class="embed-preview-wrapper" id="embed-preview">
+                  <div class="ep-bar" id="ep-bar" style="background:#5865F2"></div>
+                  <div class="ep-body">
+                    <div class="ep-author" id="ep-author" style="display:none">
+                      <img id="ep-author-icon" src="" alt="" style="display:none"/>
+                      <span id="ep-author-name"></span>
+                    </div>
+                    <div class="ep-title" id="ep-title" style="display:none"></div>
+                    <div class="ep-desc" id="ep-desc" style="display:none"></div>
+                    <div id="ep-fields" class="ep-fields"></div>
+                    <img id="ep-image" src="" alt="" class="ep-image" style="display:none"/>
+                    <div class="ep-footer-row">
+                      <img id="ep-footer-icon" src="" alt="" class="ep-footer-icon" style="display:none"/>
+                      <span id="ep-footer" style="display:none"></span>
+                      <span id="ep-timestamp" style="display:none"></span>
+                    </div>
+                  </div>
+                  <img id="ep-thumbnail" src="" alt="" class="ep-thumbnail" style="display:none"/>
+                </div>
+                <div id="components-preview" class="components-preview"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- History Section -->
+  <section id="section-history" class="section">
+    <div class="section-header"><h1>Histórico</h1><p>Embeds enviados nesta sessão</p></div>
+    <div id="history-list" class="history-list">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <p>Nenhum embed enviado ainda</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Templates Section -->
+  <section id="section-templates" class="section">
+    <div class="section-header"><h1>Templates</h1><p>Comece com um template pronto</p></div>
+    <div class="templates-grid" id="templates-grid"></div>
+  </section>
+
+</main>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+let user = null;
+let fields = [];
+let buttonRows = [];
+const history = [];
+
+const TEMPLATES = [
+  {
+    name: '🎉 Bem-vindo', color: '#57F287',
+    title: 'Bem-vindo ao servidor!',
+    description: 'Olá **{username}**! Seja bem-vindo ao nosso servidor. Leia as regras antes de participar.',
+    footer: { text: 'Servidor • Regras no #regras' },
+    fields: [{ name: '📋 Regras', value: 'Leia em #regras', inline: true }, { name: '🎭 Cargos', value: 'Pegue em #cargos', inline: true }],
+    buttons: [[{ label: '📋 Ver Regras', style: 1, custom_id: 'rules' }, { label: '🎭 Pegar Cargo', style: 3, custom_id: 'roles' }]]
+  },
+  {
+    name: '📢 Anúncio', color: '#FEE75C',
+    title: '📢 Novo Anúncio',
+    description: 'Temos uma novidade importante para compartilhar com a comunidade!\n\nFique ligado para mais informações.',
+    footer: { text: 'Equipe de Moderação' },
+    fields: [],
+    buttons: [[{ label: '✅ Entendido', style: 3, custom_id: 'confirm_announcement' }]]
+  },
+  {
+    name: '🎁 Sorteio', color: '#EB459E',
+    title: '🎁 SORTEIO!',
+    description: '**Prêmio:** Nitro Classic por 1 mês\n**Duração:** 24 horas\n**Requisito:** Estar no servidor',
+    footer: { text: 'Clique no botão para participar!' },
+    timestamp: true,
+    fields: [{ name: '🏆 Prêmio', value: 'Discord Nitro', inline: true }, { name: '⏰ Duração', value: '24 horas', inline: true }, { name: '👥 Participantes', value: '0 inscritos', inline: true }],
+    buttons: [[{ label: '🎉 Participar', style: 1, custom_id: 'giveaway_join' }, { label: '👥 Ver Participantes', style: 2, custom_id: 'giveaway_list' }]]
+  },
+  {
+    name: '🎫 Ticket', color: '#5865F2',
+    title: '🎫 Suporte',
+    description: 'Precisa de ajuda? Abra um ticket e nossa equipe irá te atender o mais rápido possível.',
+    footer: { text: 'Suporte • EmbedCraft' },
+    fields: [],
+    buttons: [[{ label: '🎫 Abrir Ticket', style: 1, custom_id: 'ticket_open' }, { label: '📖 FAQ', style: 2, custom_id: 'ticket_faq' }]]
+  },
+];
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  updateTime();
+  setInterval(updateTime, 60000);
+
+  try {
+    const res = await fetch('/api/me');
+    if (!res.ok) { location.href = '/'; return; }
+    user = await res.json();
+    document.getElementById('user-name').textContent = user.username;
+    const av = user.avatar
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`
+      : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator||'0') % 5}.png`;
+    document.getElementById('user-avatar').src = av;
+
+    // Populate guilds
+    const sel = document.getElementById('guild-select');
+    user.guilds.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g.id;
+      opt.textContent = g.name;
+      sel.appendChild(opt);
+    });
+  } catch { location.href = '/'; }
+
+  renderTemplates();
+}
+
+function updateTime() {
+  const now = new Date();
+  document.getElementById('preview-time-val').textContent =
+    now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('section-' + item.dataset.section).classList.add('active');
+    if (item.dataset.section === 'history') renderHistory();
+  });
+});
+
+// ── Channels ─────────────────────────────────────────────────────────────────
+async function loadChannels() {
+  const guildId = document.getElementById('guild-select').value;
+  const chanSel = document.getElementById('channel-select');
+  const warn = document.getElementById('bot-warning');
+  chanSel.innerHTML = '<option value="">Carregando...</option>';
+  warn.style.display = 'none';
+  if (!guildId) { chanSel.innerHTML = '<option value="">Selecione um canal...</option>'; return; }
+
+  try {
+    const res = await fetch(`/api/guilds/${guildId}/channels`);
+    const data = await res.json();
+    chanSel.innerHTML = '<option value="">Selecione um canal...</option>';
+    if (!res.ok) {
+      warn.style.display = 'block';
+      document.getElementById('invite-link').href =
+        `https://discord.com/api/oauth2/authorize?client_id=${encodeURIComponent('')}&permissions=2147485696&scope=bot&guild_id=${guildId}`;
+      return;
+    }
+    data.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = '# ' + c.name;
+      chanSel.appendChild(opt);
+    });
+  } catch { chanSel.innerHTML = '<option value="">Erro ao carregar</option>'; }
+}
+
+// ── Fields ───────────────────────────────────────────────────────────────────
+function addField() {
+  if (fields.length >= 25) return toast('Máximo de 25 campos atingido', 'error');
+  fields.push({ name: '', value: '', inline: false });
+  renderFields();
+}
+
+function removeField(i) { fields.splice(i, 1); renderFields(); updatePreview(); }
+
+function renderFields() {
+  const list = document.getElementById('fields-list');
+  document.getElementById('fields-count').textContent = `${fields.length}/25`;
+  list.innerHTML = '';
+  fields.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'field-item';
+    div.innerHTML = `
+      <div class="field-row">
+        <div class="form-group flex1"><label>Nome</label><input type="text" value="${esc(f.name)}" placeholder="Nome do campo" maxlength="256" oninput="fields[${i}].name=this.value;updatePreview()"/></div>
+        <div class="field-inline-check">
+          <input type="checkbox" id="fi${i}" ${f.inline?'checked':''} onchange="fields[${i}].inline=this.checked;updatePreview()"/>
+          <label for="fi${i}">Inline</label>
+        </div>
+        <button class="btn-remove" onclick="removeField(${i})" title="Remover">✕</button>
+      </div>
+      <div class="form-group"><label>Valor</label><textarea rows="2" placeholder="Valor do campo" maxlength="1024" oninput="fields[${i}].value=this.value;updatePreview()">${esc(f.value)}</textarea></div>`;
+    list.appendChild(div);
+  });
+}
+
+// ── Button Rows ──────────────────────────────────────────────────────────────
+function addButtonRow() {
+  if (buttonRows.length >= 5) return toast('Máximo de 5 linhas atingido', 'error');
+  buttonRows.push({ buttons: [] });
+  renderComponents();
+}
+
+function removeButtonRow(ri) { buttonRows.splice(ri, 1); renderComponents(); updatePreview(); }
+
+function addButton(ri) {
+  if (buttonRows[ri].buttons.length >= 5) return toast('Máximo de 5 botões por linha', 'error');
+  buttonRows[ri].buttons.push({ label: 'Botão', style: 1, custom_id: `btn_${Date.now()}` });
+  renderComponents(); updatePreview();
+}
+
+function removeButton(ri, bi) { buttonRows[ri].buttons.splice(bi, 1); renderComponents(); updatePreview(); }
+
+const STYLES = { 1: 'Primary', 2: 'Secondary', 3: 'Success', 4: 'Danger', 5: 'Link' };
+const STYLE_CLASS = { 1: 'btn-primary-prev', 2: 'btn-secondary-prev', 3: 'btn-success-prev', 4: 'btn-danger-prev', 5: 'btn-link-prev' };
+
+function renderComponents() {
+  const list = document.getElementById('components-list');
+  document.getElementById('add-row-btn').disabled = buttonRows.length >= 5;
+  list.innerHTML = '';
+  buttonRows.forEach((row, ri) => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'btn-row-editor';
+    rowDiv.innerHTML = `<div class="row-header"><span>Linha ${ri+1}</span><button class="btn-remove" onclick="removeButtonRow(${ri})">✕ Remover Linha</button></div>`;
+    const btnsDiv = document.createElement('div');
+    btnsDiv.className = 'btns-list';
+    row.buttons.forEach((btn, bi) => {
+      const btnDiv = document.createElement('div');
+      btnDiv.className = 'btn-editor-item';
+      const isLink = btn.style === 5;
+      btnDiv.innerHTML = `
+        <div class="btn-editor-header">
+          <span class="btn-preview-chip ${STYLE_CLASS[btn.style]}">${btn.emoji||''} ${esc(btn.label)||'Botão'}</span>
+          <button class="btn-remove sm" onclick="removeButton(${ri},${bi})">✕</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Label</label><input type="text" value="${esc(btn.label)}" placeholder="Texto do botão" maxlength="80" oninput="buttonRows[${ri}].buttons[${bi}].label=this.value;renderComponents();updatePreview()"/></div>
+          <div class="form-group sm"><label>Emoji</label><input type="text" value="${esc(btn.emoji||'')}" placeholder="🎉" maxlength="2" oninput="buttonRows[${ri}].buttons[${bi}].emoji=this.value;renderComponents();updatePreview()"/></div>
+          <div class="form-group sm"><label>Estilo</label>
+            <select onchange="buttonRows[${ri}].buttons[${bi}].style=parseInt(this.value);renderComponents();updatePreview()">
+              ${Object.entries(STYLES).map(([v,l])=>`<option value="${v}" ${btn.style==v?'selected':''}>${l}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="customid-group-${ri}-${bi}" style="${isLink?'display:none':''}">
+          <label>Custom ID</label>
+          <input type="text" value="${esc(btn.custom_id||'')}" placeholder="meu_botao" maxlength="100" oninput="buttonRows[${ri}].buttons[${bi}].custom_id=this.value"/>
+        </div>
+        <div class="form-group" id="url-group-${ri}-${bi}" style="${!isLink?'display:none':''}">
+          <label>URL</label>
+          <input type="url" value="${esc(btn.url||'')}" placeholder="https://..." oninput="buttonRows[${ri}].buttons[${bi}].url=this.value"/>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="dis${ri}${bi}" ${btn.disabled?'checked':''} onchange="buttonRows[${ri}].buttons[${bi}].disabled=this.checked;updatePreview()"/>
+          <label for="dis${ri}${bi}">Desabilitado</label>
+        </div>`;
+      btnsDiv.appendChild(btnDiv);
+    });
+    rowDiv.appendChild(btnsDiv);
+    if (row.buttons.length < 5) {
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn-add-small';
+      addBtn.textContent = '+ Adicionar Botão';
+      addBtn.onclick = () => addButton(ri);
+      rowDiv.appendChild(addBtn);
+    }
+    list.appendChild(rowDiv);
+  });
+  updatePreview();
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+function updatePreview() {
+  const color = document.getElementById('embed-color').value;
+  const title = document.getElementById('embed-title').value;
+  const desc = document.getElementById('embed-desc').value;
+  const thumbnail = document.getElementById('embed-thumbnail').value;
+  const image = document.getElementById('embed-image').value;
+  const footerText = document.getElementById('footer-text').value;
+  const footerIcon = document.getElementById('footer-icon').value;
+  const timestamp = document.getElementById('embed-timestamp').checked;
+  const authorName = document.getElementById('author-name').value;
+  const authorIcon = document.getElementById('author-icon').value;
+
+  document.getElementById('ep-bar').style.background = color;
+
+  // Author
+  const authorEl = document.getElementById('ep-author');
+  if (authorName) {
+    document.getElementById('ep-author-name').textContent = authorName;
+    const iconEl = document.getElementById('ep-author-icon');
+    if (authorIcon) { iconEl.src = authorIcon; iconEl.style.display = ''; }
+    else iconEl.style.display = 'none';
+    authorEl.style.display = 'flex';
+  } else authorEl.style.display = 'none';
+
+  // Title
+  const titleEl = document.getElementById('ep-title');
+  if (title) { titleEl.textContent = title; titleEl.style.display = ''; }
+  else titleEl.style.display = 'none';
+
+  // Desc
+  const descEl = document.getElementById('ep-desc');
+  if (desc) { descEl.innerHTML = formatDiscordMarkdown(desc); descEl.style.display = ''; }
+  else descEl.style.display = 'none';
+
+  // Fields
+  const fieldsEl = document.getElementById('ep-fields');
+  const validFields = fields.filter(f => f.name || f.value);
+  fieldsEl.innerHTML = '';
+  validFields.forEach(f => {
+    const fd = document.createElement('div');
+    fd.className = 'ep-field' + (f.inline ? ' inline' : '');
+    fd.innerHTML = `<strong>${esc(f.name)}</strong><br/><span>${esc(f.value)}</span>`;
+    fieldsEl.appendChild(fd);
+  });
+
+  // Image & Thumbnail
+  const imgEl = document.getElementById('ep-image');
+  if (image) { imgEl.src = image; imgEl.style.display = ''; }
+  else imgEl.style.display = 'none';
+
+  const thumbEl = document.getElementById('ep-thumbnail');
+  if (thumbnail) { thumbEl.src = thumbnail; thumbEl.style.display = ''; }
+  else thumbEl.style.display = 'none';
+
+  // Footer
+  const footerEl = document.getElementById('ep-footer');
+  const footerIconEl = document.getElementById('ep-footer-icon');
+  const tsEl = document.getElementById('ep-timestamp');
+  if (footerText) {
+    footerEl.textContent = footerText; footerEl.style.display = '';
+    if (footerIcon) { footerIconEl.src = footerIcon; footerIconEl.style.display = ''; }
+    else footerIconEl.style.display = 'none';
+  } else { footerEl.style.display = 'none'; footerIconEl.style.display = 'none'; }
+  if (timestamp) {
+    tsEl.textContent = (footerText ? ' · ' : '') + new Date().toLocaleDateString('pt-BR');
+    tsEl.style.display = '';
+  } else tsEl.style.display = 'none';
+
+  // Buttons preview
+  const compPrev = document.getElementById('components-preview');
+  compPrev.innerHTML = '';
+  buttonRows.forEach(row => {
+    if (!row.buttons.length) return;
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'prev-btn-row';
+    row.buttons.forEach(btn => {
+      const b = document.createElement('button');
+      b.className = `prev-btn ${STYLE_CLASS[btn.style]}`;
+      b.textContent = (btn.emoji ? btn.emoji + ' ' : '') + (btn.label || 'Botão');
+      if (btn.disabled) b.disabled = true;
+      rowDiv.appendChild(b);
+    });
+    compPrev.appendChild(rowDiv);
+  });
+}
+
+function formatDiscordMarkdown(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/__(.+?)__/g,'<u>$1</u>')
+    .replace(/~~(.+?)~~/g,'<s>$1</s>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br/>');
+}
+
+// ── Color Sync ────────────────────────────────────────────────────────────────
+function syncColorFromHex() {
+  const hex = document.getElementById('embed-color-hex').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+    document.getElementById('embed-color').value = hex;
+    updatePreview();
+  }
+}
+document.getElementById('embed-color').addEventListener('input', function() {
+  document.getElementById('embed-color-hex').value = this.value;
+  updatePreview();
+});
+function setColor(c) {
+  document.getElementById('embed-color').value = c;
+  document.getElementById('embed-color-hex').value = c;
+  updatePreview();
+}
+
+function updateCount(inputId, countId, max) {
+  const len = document.getElementById(inputId).value.length;
+  document.getElementById(countId).textContent = `${len}/${max}`;
+}
+
+// ── Send ─────────────────────────────────────────────────────────────────────
+async function sendEmbed() {
+  const channelId = document.getElementById('channel-select').value;
+  if (!channelId) return toast('Selecione um canal de destino', 'error');
+
+  const embed = {
+    color: document.getElementById('embed-color').value,
+    title: document.getElementById('embed-title').value,
+    url: document.getElementById('embed-url').value,
+    description: document.getElementById('embed-desc').value,
+    thumbnail: document.getElementById('embed-thumbnail').value,
+    image: document.getElementById('embed-image').value,
+    timestamp: document.getElementById('embed-timestamp').checked,
+    author: {
+      name: document.getElementById('author-name').value,
+      url: document.getElementById('author-url').value,
+      icon_url: document.getElementById('author-icon').value,
+    },
+    footer: {
+      text: document.getElementById('footer-text').value,
+      icon_url: document.getElementById('footer-icon').value,
+    },
+    fields: fields.filter(f => f.name && f.value),
+  };
+
+  if (!embed.title && !embed.description && !embed.fields.length) {
+    return toast('Adicione pelo menos um título, descrição ou campo', 'error');
+  }
+
+  const components = buttonRows.filter(r => r.buttons.length > 0);
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+  try {
+    const res = await fetch('/api/send-embed', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId, embed, components }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast('✅ Embed enviado com sucesso!', 'success');
+      addToHistory(embed, components, channelId);
+    } else {
+      toast('❌ ' + (data.error || 'Erro ao enviar'), 'error');
+    }
+  } catch { toast('❌ Erro de conexão', 'error'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg> Enviar Embed';
+  }
+}
+
+// ── History ───────────────────────────────────────────────────────────────────
+function addToHistory(embed, components, channelId) {
+  history.unshift({ embed, components, channelId, time: new Date() });
+  if (history.length > 20) history.pop();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!history.length) {
+    list.innerHTML = '<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Nenhum embed enviado ainda</p></div>';
+    return;
+  }
+  list.innerHTML = history.map((h, i) => `
+    <div class="history-item" onclick="loadFromHistory(${i})">
+      <div class="history-bar" style="background:${h.embed.color||'#5865F2'}"></div>
+      <div class="history-info">
+        <strong>${h.embed.title || 'Sem título'}</strong>
+        <span>${h.time.toLocaleString('pt-BR')}</span>
+      </div>
+      <div class="history-actions">
+        <button class="btn-sm" onclick="event.stopPropagation();loadFromHistory(${i})">Carregar</button>
+      </div>
+    </div>`).join('');
+}
+
+function loadFromHistory(i) {
+  const h = history[i];
+  document.getElementById('embed-color').value = h.embed.color || '#5865F2';
+  document.getElementById('embed-color-hex').value = h.embed.color || '#5865F2';
+  document.getElementById('embed-title').value = h.embed.title || '';
+  document.getElementById('embed-desc').value = h.embed.description || '';
+  document.getElementById('embed-thumbnail').value = h.embed.thumbnail || '';
+  document.getElementById('embed-image').value = h.embed.image || '';
+  document.getElementById('footer-text').value = h.embed.footer?.text || '';
+  fields = [...(h.embed.fields || [])];
+  buttonRows = h.components.map(r => ({ buttons: [...r.buttons] }));
+  renderFields(); renderComponents(); updatePreview();
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-section="builder"]').classList.add('active');
+  document.getElementById('section-builder').classList.add('active');
+  toast('Template carregado!', 'success');
+}
+
+// ── Templates ─────────────────────────────────────────────────────────────────
+function renderTemplates() {
+  const grid = document.getElementById('templates-grid');
+  grid.innerHTML = TEMPLATES.map((t, i) => `
+    <div class="template-card" onclick="applyTemplate(${i})">
+      <div class="template-color-bar" style="background:${t.color}"></div>
+      <div class="template-info">
+        <h3>${t.name}</h3>
+        <p>${t.description.substring(0,80)}...</p>
+        <span class="template-meta">${t.fields.length} campos · ${(t.buttons||[]).reduce((a,r)=>a+r.length,0)} botões</span>
+      </div>
+    </div>`).join('');
+}
+
+function applyTemplate(i) {
+  const t = TEMPLATES[i];
+  setColor(t.color);
+  document.getElementById('embed-title').value = t.title || '';
+  document.getElementById('embed-desc').value = t.description || '';
+  document.getElementById('footer-text').value = t.footer?.text || '';
+  document.getElementById('embed-timestamp').checked = !!t.timestamp;
+  fields = (t.fields || []).map(f => ({...f}));
+  buttonRows = (t.buttons || []).map(row => ({ buttons: row.map(b => ({...b})) }));
+  renderFields(); renderComponents(); updatePreview();
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-section="builder"]').classList.add('active');
+  document.getElementById('section-builder').classList.add('active');
+  toast(`Template "${t.name}" aplicado!`, 'success');
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('embed-title').value = '';
+  document.getElementById('embed-desc').value = '';
+  document.getElementById('embed-url').value = '';
+  document.getElementById('embed-thumbnail').value = '';
+  document.getElementById('embed-image').value = '';
+  document.getElementById('footer-text').value = '';
+  document.getElementById('footer-icon').value = '';
+  document.getElementById('author-name').value = '';
+  document.getElementById('author-url').value = '';
+  document.getElementById('author-icon').value = '';
+  document.getElementById('embed-timestamp').checked = false;
+  setColor('#5865F2');
+  fields = []; buttonRows = [];
+  renderFields(); renderComponents(); updatePreview();
+  toast('Formulário resetado', 'info');
+}
+
+function copyJSON() {
+  const embed = {
+    color: parseInt(document.getElementById('embed-color').value.replace('#',''), 16),
+    title: document.getElementById('embed-title').value || undefined,
+    description: document.getElementById('embed-desc').value || undefined,
+    fields: fields.filter(f => f.name && f.value),
+    footer: document.getElementById('footer-text').value ? { text: document.getElementById('footer-text').value } : undefined,
+    timestamp: document.getElementById('embed-timestamp').checked ? new Date().toISOString() : undefined,
+  };
+  navigator.clipboard.writeText(JSON.stringify({ embeds: [embed] }, null, 2))
+    .then(() => toast('JSON copiado!', 'success'))
+    .catch(() => toast('Erro ao copiar', 'error'));
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+let toastTimer;
+function toast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast toast-${type}`;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+init();
+</script>
+</body>
+</html>
